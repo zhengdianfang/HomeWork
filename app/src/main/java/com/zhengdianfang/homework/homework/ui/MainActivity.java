@@ -11,15 +11,17 @@ import com.zhengdianfang.homework.homework.bean.User;
 import com.zhengdianfang.homework.homework.presenter.view.TweetListPresenter;
 import com.zhengdianfang.homework.homework.presenter.view.TweetsView;
 import com.zhengdianfang.homework.homework.ui.adapter.TweetItemAdapter;
+import com.zhengdianfang.homework.homework.ui.views.HomeworkSwipeRefreshLayout;
 
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements TweetsView {
+public class MainActivity extends BaseActivity implements TweetsView, HomeworkSwipeRefreshLayout.OnRefreshListener {
 
     private TweetListPresenter mTweetListPresenter;
     private TweetItemAdapter mTweetItemAdapter;
     private ProgressBar mLoadingBar;
     private RecyclerView mTweetList;
+    private HomeworkSwipeRefreshLayout mRefreshFrameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class MainActivity extends BaseActivity implements TweetsView {
         mTweetList.setAdapter(mTweetItemAdapter);
         mLoadingBar = (ProgressBar) findViewById(R.id.loadingBar);
 
+        mRefreshFrameView = (HomeworkSwipeRefreshLayout) findViewById(R.id.refreshFrameView);
+        mRefreshFrameView.setOnRefreshListener(this);
 
         //load datas
         mTweetListPresenter = new TweetListPresenter(this);
@@ -61,11 +65,13 @@ public class MainActivity extends BaseActivity implements TweetsView {
     @Override
     public void onShowUserInfor(User user) {
         mTweetItemAdapter.setUser(user);
+        mRefreshFrameView.setRefreshing(false);
     }
 
     @Override
     public void onShowTweetList(List<Tweet> tweets) {
         mTweetItemAdapter.setTweetList(tweets);
+        mRefreshFrameView.setRefreshing(false);
     }
 
     @Override
@@ -78,5 +84,10 @@ public class MainActivity extends BaseActivity implements TweetsView {
     public void hideProgress() {
         mLoadingBar.setVisibility(View.GONE);
         mTweetList.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRefresh() {
+        mTweetListPresenter.refreshRequest();
     }
 }

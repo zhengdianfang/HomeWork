@@ -4,5 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="nine_grid_one_image_width">140dp</dimen>
-    <dimen name="nine_grid_one_image_height">120dp</dimen>
+    <dimen name="nine_grid_one_image_height">140dp</dimen>
 </resources>

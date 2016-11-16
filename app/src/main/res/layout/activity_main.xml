@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@android:color/black"
     tools:context="com.zhengdianfang.homework.homework.ui.MainActivity">
 
     <android.support.v7.widget.Toolbar
@@ -26,12 +26,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/tweetList"
+        <com.zhengdianfang.homework.homework.ui.views.HomeworkSwipeRefreshLayout
+            android:id="@+id/refreshFrameView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:layoutManager="LinearLayoutManager"/>
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/tweetList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layoutManager="LinearLayoutManager"/>
+
+        </com.zhengdianfang.homework.homework.ui.views.HomeworkSwipeRefreshLayout>
 
     </FrameLayout>
 </LinearLayout>
