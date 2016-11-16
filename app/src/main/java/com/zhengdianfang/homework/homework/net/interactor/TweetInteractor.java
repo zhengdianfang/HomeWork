@@ -1,7 +1,5 @@
 package com.zhengdianfang.homework.homework.net.interactor;
 
-import android.support.annotation.NonNull;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.zhengdianfang.homework.homework.bean.Tweet;
@@ -9,6 +7,7 @@ import com.zhengdianfang.homework.homework.net.Api;
 import com.zhengdianfang.homework.homework.net.ApiClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -26,17 +25,20 @@ public class TweetInteractor implements BaseInteractor {
     /**
      * request http  get tweets
      * @param username
-     * @param listener
      */
-    public void getTweetListRequest(String username , @NonNull OnFinishedListener<List<Tweet>> listener){
-        ApiClient.get().request().create(Api.class).getTweets(username)
+    public Observable<List<Tweet>> getTweetListObervable(String username ){
+        return ApiClient.get().request().create(Api.class).getTweets(username)
                 .flatMap(new Func1<JsonNode, Observable<List<Tweet>>>() {
                     @Override
                     public Observable<List<Tweet>> call(JsonNode jsonNode) {
-                        List<Tweet> tweetList = null;
+                        List<Tweet> tweetList = new ArrayList<>();
                         if (jsonNode != null) {
                             try {
-                                tweetList = ApiClient.get().json().readValue(jsonNode.toString(), new TypeReference<List<Tweet>>() {});
+                                List<Tweet> results = ApiClient.get().json().readValue(jsonNode.toString(), new TypeReference<List<Tweet>>() {});
+                                //filte error datas.
+                                Observable.from(results).filter(tweet -> tweet.sender != null).subscribe(tweet -> {
+                                    tweetList.add(tweet);
+                                });
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -44,11 +46,12 @@ public class TweetInteractor implements BaseInteractor {
                         return Observable.just(tweetList);
                     }
                 }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tweets -> {
-                    listener.onFinished(tweets);
-                }, throwable -> {
-                    listener.onError(throwable.getMessage());
-                });
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
+
+
+
+
+
 }

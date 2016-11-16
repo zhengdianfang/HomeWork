@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Tweet implements Parcelable{
 
     public String content;
+    @JsonProperty("images")
     public ArrayList<TweetImage> tweetImages;
     public User sender;
     @JsonProperty("comments")

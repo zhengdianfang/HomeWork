@@ -1,7 +1,5 @@
 package com.zhengdianfang.homework.homework.net.interactor;
 
-import android.support.annotation.NonNull;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.zhengdianfang.homework.homework.bean.User;
 import com.zhengdianfang.homework.homework.net.Api;
@@ -22,10 +20,10 @@ public class UserInteractor implements BaseInteractor {
 
     /**
      * request http  get User infor.
-     * @param listener
+     * @param  username
      */
-    public void getUserInforRequest(@NonNull OnFinishedListener<User> listener){
-        ApiClient.get().request().create(Api.class).getUserInfor()
+    public Observable<User> getUserInforObervable(String username){
+        return ApiClient.get().request().create(Api.class).getUserInfor(username)
                 .flatMap(new Func1<JsonNode, Observable<User>>() {
                     @Override
                     public Observable<User> call(JsonNode jsonNode) {
@@ -40,11 +38,8 @@ public class UserInteractor implements BaseInteractor {
                         return Observable.just(user);
                     }
                 }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(user -> {
-                    listener.onFinished(user);
-                }, throwable -> {
-                    listener.onError(throwable.getMessage());
-                });
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
+
 }

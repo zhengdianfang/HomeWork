@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                      xmlns:app="http://schemas.android.com/apk/res-auto"
+                                      xmlns:tools="http://schemas.android.com/tools"
+                                      android:layout_width="match_parent"
+                                      android:layout_height="wrap_content"
+                                      android:padding="16dp"
+                                      app:columnCount="2"
+                                      android:background="@drawable/tweet_item_background">
+
+    <ImageView
+        android:id="@+id/tweetSenderAvatarImageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_rowSpan="4"
+        tools:background="@android:color/holo_red_dark"/>
+
+    <TextView
+        android:id="@+id/tweetSenderNicknameTextView"
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/c_576b95"
+        android:textSize="14sp"
+        app:layout_column="1"
+        app:layout_gravity="fill_horizontal"
+        tools:text="nickname"/>
+
+    <TextView
+        android:id="@+id/tweetContentTextView"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_column="1"
+        app:layout_gravity="fill_horizontal"
+        tools:text="contentcontent"/>
+
+    <com.zhengdianfang.homework.homework.ui.views.TweetNineGridLayout
+        android:id="@+id/tweetImagesFrameView"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_column="1"
+        app:layout_gravity="fill_horizontal"
+        tools:background="@android:color/holo_green_dark"/>
+
+    <LinearLayout
+        android:id="@+id/tweetCommentsFrameView"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_column="1"
+        app:layout_gravity="fill_horizontal"
+        tools:background="@android:color/holo_green_dark"
+        tools:layout_height="20dp"/>
+
+
+</android.support.v7.widget.GridLayout>

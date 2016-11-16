@@ -7,8 +7,4 @@ package com.zhengdianfang.homework.homework.net.interactor;
 
 public interface BaseInteractor {
 
-    interface OnFinishedListener<T>{
-        void onFinished(T result);
-        void onError(String errorMsg);
-    }
 }

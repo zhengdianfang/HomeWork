@@ -13,12 +13,12 @@ import rx.Observable;
 
 public interface Api {
 
-    public static final String HOST = "http://thoughtworks-ios.herokuapp.com/";
-    public static final String USER_URL = "user/jsmith";
-    public static final String TWEETS_URL = "user/{username}/tweets";
+    String HOST = "http://thoughtworks-ios.herokuapp.com/";
+    String USER_URL = "user/{username}";
+    String TWEETS_URL = "user/{username}/tweets";
 
     @GET(USER_URL)
-    Observable<JsonNode> getUserInfor();
+    Observable<JsonNode> getUserInfor(@Path("username") String username);
 
     @GET(TWEETS_URL)
     Observable<JsonNode> getTweets(@Path("username") String username);
