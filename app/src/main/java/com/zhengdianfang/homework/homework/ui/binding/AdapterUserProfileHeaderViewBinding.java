@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.zhengdianfang.homework.homework.R;
 import com.zhengdianfang.homework.homework.bean.User;
@@ -32,8 +33,8 @@ public class AdapterUserProfileHeaderViewBinding extends AdapteItemBinding<User>
         TextView nickNameTextView = (TextView) rootView.findViewById(R.id.nickNameTextView);
         if (user != null) {
             Glide.with(mContext).load(user.profileImage).placeholder(R.drawable.tweet_profile_image_placehoder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(profileImageView);
-            Glide.with(mContext).load(user.avatar).placeholder(R.drawable.ic_avatar_placeholder).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(avatarImageView);
+                    .diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().priority(Priority.HIGH).into(profileImageView);
+            Glide.with(mContext).load(user.avatar).placeholder(R.drawable.ic_avatar_placeholder).diskCacheStrategy(DiskCacheStrategy.ALL).priority(Priority.HIGH).centerCrop().into(avatarImageView);
             nickNameTextView.setText(Html.fromHtml(user.nick));//名字可能存在表情符号，所以用Html解析。
         }
     }
