@@ -7,6 +7,9 @@ import com.zhengdianfang.homework.homework.presenter.view.IView;
  */
 
 public abstract class BaseListPresenter<T extends IView, R> extends BasePresenter<T> {
+
+    protected boolean isLoademore = false;
+
     public BaseListPresenter(T t) {
         super(t);
     }

@@ -3,6 +3,7 @@ package com.zhengdianfang.homework.homework.ui.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -56,7 +57,6 @@ public abstract class NineGridLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.getSize(widthMeasureSpec);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -114,12 +114,12 @@ public abstract class NineGridLayout extends ViewGroup {
         if (size == 1) {
             String url = mUrlList.get(0).url;
             ImageView imageView = createImageView(0, url);
-            LayoutParams params = getLayoutParams();
-            params.height = mSingleWidth;
-            params.width = mSingleWidth;
-            setLayoutParams(params);
             float width = getContext().getResources().getDimension(R.dimen.nine_grid_one_image_width);
             float height = getContext().getResources().getDimension(R.dimen.nine_grid_one_image_height);
+            LayoutParams params = getLayoutParams();
+            params.height = (int) width;
+            params.width = (int) height;
+            setLayoutParams(params);
             imageView.layout(0, 0, (int)width , (int)height);
             addView(imageView);
             displayOneImage(imageView, url, mTotalWidth);
@@ -166,7 +166,7 @@ public abstract class NineGridLayout extends ViewGroup {
         ImageView imageView = new ImageView(mContext);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setImageResource(R.drawable.nice_grid_image_placeholder);
-        imageView.setOnClickListener(v -> onClickImage(i, url, mUrlList));
+        imageView.setOnClickListener(v -> onClickImage(v, i, url, mUrlList));
         return imageView;
     }
 
@@ -245,5 +245,5 @@ public abstract class NineGridLayout extends ViewGroup {
 
     protected abstract void displayImage(ImageView imageView, String url);
 
-    protected abstract void onClickImage(int position, String url, List<TweetImage> urlList);
+    protected abstract void onClickImage(View view, int position, String url, List<TweetImage> urlList);
 }

@@ -7,12 +7,14 @@ import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -75,10 +77,13 @@ public class AdapterTweetItemViewBinding extends AdapteItemBinding<Tweet> {
                     builder.append(nick).append(": ");
                 }
                 builder.append(content);
+                String finalNick = nick;
                 CommonMethod.addClickSpan(builder, nick + ": ", ContextCompat.getColor(mContext, R.color.c_576b95), view -> {
-                    //TODO click sender nickname.
+                    // click sender nickname.
+                    Toast.makeText(mContext, mContext.getString(R.string.click_comment_sender_toast, finalNick), Toast.LENGTH_SHORT).show();
                 });
                 TextView textView = new TextView(mContext);
+                textView.setMovementMethod(new LinkMovementMethod());
                 textView.setText(builder);
                 textView.setTextColor(Color.BLACK);
                 tweetCommentsFrameView.addView(textView);

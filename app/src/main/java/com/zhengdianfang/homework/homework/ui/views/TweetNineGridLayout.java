@@ -5,10 +5,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.GenericRequest;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.zhengdianfang.homework.homework.R;
@@ -68,7 +71,7 @@ public class TweetNineGridLayout extends NineGridLayout {
 
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                imageView.setImageResource(R.drawable.nice_grid_image_placeholder);
+                imageView.setImageResource(R.drawable.tweet_image_error_drawable);
 
             }
         });
@@ -77,11 +80,20 @@ public class TweetNineGridLayout extends NineGridLayout {
 
     @Override
     protected void displayImage(ImageView imageView, String url) {
-        Glide.with(getContext()).load(url).placeholder(R.drawable.nice_grid_image_placeholder).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        Glide.with(getContext()).load(url).placeholder(R.drawable.nice_grid_image_placeholder)
+                .error(R.drawable.tweet_image_error_drawable).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
     }
 
     @Override
-    protected void onClickImage(int position, String url, List<TweetImage> urlList) {
-        //TODO click image event.
+    protected void onClickImage(View view, int position, String url, List<TweetImage> urlList) {
+        //click image event.
+        if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            GenericRequest genericRequest = (GenericRequest) imageView.getTag();
+            if (genericRequest.isFailed()) {
+                genericRequest.begin();
+                Toast.makeText(mContext, R.string.tweet_image_request_retry_toast, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.zhengdianfang.homework.homework.ui.views;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.view.MotionEventCompat;
@@ -24,6 +25,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
+
+import com.zhengdianfang.homework.homework.R;
 
 /**
  * Created by lbf on 2016/7/24.
@@ -62,7 +65,7 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
     private static final int ANIMATE_TO_START_DURATION = 200;
 
     // Default background for the progress spinner
-    private static final int CIRCLE_BG_LIGHT = 0xFFFAFAFA;
+    private static final int CIRCLE_BG_LIGHT = 0x00000000;
     // Default offset in dips from the top of the view to where the progress spinner should stop
     private static final int DEFAULT_CIRCLE_TARGET = 64;
 
@@ -111,7 +114,7 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
 
     protected int mOriginalOffsetTop;
 
-    private MaterialProgressDrawable mProgress;
+    private HomeworkProgressDrwable mProgress;
 
     private Animation mScaleAnimation;
 
@@ -165,7 +168,7 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
         mCircleView.clearAnimation();
         mProgress.stop();
         mCircleView.setVisibility(View.GONE);
-        setColorViewAlpha(MAX_ALPHA);
+      //  setColorViewAlpha(MAX_ALPHA);
         // Return the circle to its start position
         if (mScale) {
             setAnimationProgress(0 /* animation complete and view is hidden */);
@@ -246,7 +249,7 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
         // re-setting it
         mCircleView.setImageDrawable(null);
         mProgress.updateSizes(size);
-        mCircleView.setImageDrawable(mProgress);
+        mCircleView.setImageResource(R.drawable.tweet_list_circle_refresh);
     }
 
     /**
@@ -308,16 +311,18 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
             return i;
         }
     }
-
-    public void setProgressView(MaterialProgressDrawable mProgress){
+/*
+    public void setProgressView(HomeworkProgressDrwable mProgress){
         this.mProgress = mProgress;
         mCircleView.setImageDrawable(mProgress);
-    }
+    }*/
 
     private void createProgressView() {
-        mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2);
-        mProgress = new MaterialProgressDrawable(getContext(), this);
-        mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
+        mCircleView = new CircleImageView(getContext());
+        mProgress = new HomeworkProgressDrwable(getContext(), this);
+       // mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
+        Drawable vectorDrawable = getResources().getDrawable(R.drawable.tweet_list_circle_refresh);
+        mProgress.setDrawable(vectorDrawable);
         mCircleView.setImageDrawable(mProgress);
         mCircleView.setVisibility(View.GONE);
         addView(mCircleView);
@@ -390,12 +395,9 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
      * @param progress
      */
     private void setAnimationProgress(float progress) {
-        if (isAlphaUsedForScale()) {
-            setColorViewAlpha((int) (progress * MAX_ALPHA));
-        } else {
-            ViewCompat.setScaleX(mCircleView, progress);
-            ViewCompat.setScaleY(mCircleView, progress);
-        }
+
+        ViewCompat.setScaleX(mCircleView, progress);
+        ViewCompat.setScaleY(mCircleView, progress);
     }
 
     private void setRefreshing(boolean refreshing, final boolean notify) {
@@ -912,24 +914,17 @@ public class HomeworkSwipeRefreshLayout extends ViewGroup implements NestedScrol
         float strokeStart = adjustedPercent * .8f;
         mProgress.setStartEndTrim(0f, Math.min(MAX_PROGRESS_ANGLE, strokeStart));
         mProgress.setArrowScale(Math.min(1f, adjustedPercent));
-//            经过一堆数学处理后的rotation
         float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
         mProgress.setProgressRotation(rotation);
-//            setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop, true /* requires update */);
-//            最终刷新的位置
         int endTarget;
         if (!mUsingCustomStart) {
-//                没有修改使用默认的值
             endTarget = (int) (mSpinnerFinalOffset - Math.abs(mOriginalOffsetTop));
         } else {
-//                否则使用定义的值
             endTarget = (int) mSpinnerFinalOffset;
         }
-        if(targetY>=endTarget){
-//                下移的位置超过最终位置后就不再下移，第一个参数为偏移量
+        if(targetY >= endTarget){
             setTargetOffsetTopAndBottom(0, true /* requires update */);
         }else{
-//                否则继续继续下移
             setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop, true /* requires update */);
         }
     }

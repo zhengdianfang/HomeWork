@@ -105,7 +105,8 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
         mRing.setColors(COLORS);
 
         updateSizes(DEFAULT);
-        setupAnimators();
+       // setupAnimators();
+        setupAnimation();
     }
 
     private void setSizeParameters(double progressCircleWidth, double progressCircleHeight,
@@ -253,21 +254,22 @@ class MaterialProgressDrawable extends Drawable implements Animatable {
         return false;
     }
 
+    private void setupAnimation(){
+        mAnimation = new Animation(){
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                setProgressRotation(-interpolatedTime);
+            }
+        };
+        mAnimation.setDuration(5000);
+        mAnimation.setRepeatCount(Animation.INFINITE);
+        mAnimation.setRepeatMode(Animation.RESTART);
+        mAnimation.setInterpolator(new LinearInterpolator());
+    }
+
     @Override
     public void start() {
-        mAnimation.reset();
-        mRing.storeOriginals();
-        // Already showing some part of the ring
-        if (mRing.getEndTrim() != mRing.getStartTrim()) {
-            mFinishing = true;
-            mAnimation.setDuration(ANIMATION_DURATION / 2);
-            mParent.startAnimation(mAnimation);
-        } else {
-            mRing.setColorIndex(0);
-            mRing.resetOriginals();
-            mAnimation.setDuration(ANIMATION_DURATION);
-            mParent.startAnimation(mAnimation);
-        }
+        mParent.startAnimation(mAnimation);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.zhengdianfang.homework.homework.presenter.BaseListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -33,8 +34,9 @@ public class TweetListPresenter extends BaseListPresenter<TweetsView, Pair<User,
     private User mUser;
     private UserInteractor mUserInteractor = new UserInteractor();
     private TweetInteractor mTweetInteractor = new TweetInteractor();
-    private int pageIndex = 0;
+    private int startIndex = 0;
     private int pageNum = 5;
+    private boolean isLoadmoreDoing = false;
 
     public TweetListPresenter(TweetsView IView) {
         super(IView);
@@ -42,7 +44,8 @@ public class TweetListPresenter extends BaseListPresenter<TweetsView, Pair<User,
 
     @Override
     public void refreshRequest() {
-        pageIndex = 0;
+        startIndex = 0;
+        isLoademore = false;
         Subscription subscribe = Observable.zip(mUserInteractor.getUserInforObervable(Constans.DEFAULT_USER_NAME)
                 , mTweetInteractor.getTweetListObervable(Constans.DEFAULT_USER_NAME), (user, tweets) -> Pair.create(user, tweets))
                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
@@ -57,8 +60,15 @@ public class TweetListPresenter extends BaseListPresenter<TweetsView, Pair<User,
 
     @Override
     public void loadMoreRequest() {
-        ++pageIndex;
-        mIView.onShowTweetList(mTweets.subList(pageIndex, pageIndex + pageNum));
+        isLoademore = true;
+        startIndex += pageNum;
+        if (startIndex < mTweets.size() && !isLoadmoreDoing){
+            isLoadmoreDoing = true;
+            rx.Observable.timer(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
+                subTweetList();
+                isLoadmoreDoing = false;
+            });
+        }
     }
 
     @Override
@@ -72,11 +82,22 @@ public class TweetListPresenter extends BaseListPresenter<TweetsView, Pair<User,
                 mTweets.clear();
                 mTweets.addAll(result.second);
             }
-            mIView.onShowTweetList(mTweets);
+            subTweetList();
 
         }
         super.onFinished(result);
 
+    }
+
+    private void subTweetList() {
+        int lastIndex = 0;
+        int endIndex = 0;
+        if (!mTweets.isEmpty()) {
+            lastIndex = mTweets.size() - 1;
+            endIndex = startIndex + pageNum;
+            endIndex =  endIndex >= lastIndex ? lastIndex : endIndex;
+        }
+        mIView.onShowTweetList(startIndex < endIndex ? mTweets.subList(startIndex, endIndex) : mTweets, endIndex != lastIndex ,isLoademore);
     }
 
     @Override

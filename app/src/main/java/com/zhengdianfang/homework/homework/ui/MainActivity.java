@@ -1,7 +1,9 @@
 package com.zhengdianfang.homework.homework.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -15,7 +17,7 @@ import com.zhengdianfang.homework.homework.ui.views.HomeworkSwipeRefreshLayout;
 
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements TweetsView, HomeworkSwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity implements TweetsView, HomeworkSwipeRefreshLayout.OnRefreshListener{
 
     private TweetListPresenter mTweetListPresenter;
     private TweetItemAdapter mTweetItemAdapter;
@@ -29,9 +31,26 @@ public class MainActivity extends BaseActivity implements TweetsView, HomeworkSw
         setContentView(R.layout.activity_main);
 
         //init views
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
         mTweetItemAdapter = new TweetItemAdapter(this);
         mTweetList = (RecyclerView) findViewById(R.id.tweetList);
         mTweetList.setAdapter(mTweetItemAdapter);
+        mTweetList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                    if (layoutManager.getChildCount() > 0
+                            && lastVisibleItemPosition >= layoutManager.getItemCount() - 1 && layoutManager.getItemCount() > layoutManager.getChildCount()) {
+                        mTweetListPresenter.loadMoreRequest();
+                    }
+                }
+            }
+        });
         mLoadingBar = (ProgressBar) findViewById(R.id.loadingBar);
 
         mRefreshFrameView = (HomeworkSwipeRefreshLayout) findViewById(R.id.refreshFrameView);
@@ -69,8 +88,9 @@ public class MainActivity extends BaseActivity implements TweetsView, HomeworkSw
     }
 
     @Override
-    public void onShowTweetList(List<Tweet> tweets) {
-        mTweetItemAdapter.setTweetList(tweets);
+    public void onShowTweetList(List<Tweet> tweets, boolean isAll, boolean isLoadmore) {
+        mTweetItemAdapter.setCanLoadmore(isAll);
+        mTweetItemAdapter.setTweetList(tweets, isLoadmore);
         mRefreshFrameView.setRefreshing(false);
     }
 

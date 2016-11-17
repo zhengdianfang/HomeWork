@@ -21,5 +21,5 @@ public interface TweetsView extends IView {
      * display tweet listview.
      * @param tweets
      */
-    void onShowTweetList(List<Tweet> tweets);
+    void onShowTweetList(List<Tweet> tweets, boolean isAll, boolean isLoadmore);
 }
