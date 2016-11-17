@@ -45,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IView{
 
     @Override
     public void onTrimMemory(int level) {
-        Glide.get(this.getContext().getApplicationContext()).clearMemory();
+        Glide.with(this).onTrimMemory(level);
     }
 
     public int dip(float dpValue){

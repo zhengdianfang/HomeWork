@@ -49,7 +49,6 @@ public class TweetNineGridLayout extends NineGridLayout {
                 if (resource != null) {
                     int w = resource.getWidth();
                     int h = resource.getHeight();
-
                     int newWidth;
                     int newHeight;
                     if (h > w * 3) {//h:w = 5:3
@@ -62,9 +61,7 @@ public class TweetNineGridLayout extends NineGridLayout {
                         newWidth = parentWidth / 2;
                         newHeight = h * newWidth / w;
                     }
-                    LayoutParams layoutParams = imageView.getLayoutParams();
-                    layoutParams.width = newWidth;
-                    layoutParams.height = newHeight;
+                    setOneImageLayoutParams(imageView, newWidth, newHeight);
                     imageView.setImageBitmap(resource);
                 }
             }

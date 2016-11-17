@@ -12,7 +12,6 @@ import com.zhengdianfang.homework.homework.bean.TweetImage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 
 /**
@@ -93,16 +92,8 @@ public abstract class NineGridLayout extends ViewGroup {
         }
     }
 
-    public void notifyDataSetChanged() {
-        post(new TimerTask() {
-            @Override
-            public void run() {
-                refresh();
-            }
-        });
-    }
 
-    private void refresh() {
+    private void notifyDataSetChanged() {
         removeAllViews();
         int size = mUrlList.size();
         if (size > 0) {
@@ -114,6 +105,7 @@ public abstract class NineGridLayout extends ViewGroup {
         if (size == 1) {
             String url = mUrlList.get(0).url;
             ImageView imageView = createImageView(0, url);
+            imageView.setImageResource(R.drawable.nice_grid_image_placeholder);
             float width = getContext().getResources().getDimension(R.dimen.nine_grid_one_image_width);
             float height = getContext().getResources().getDimension(R.dimen.nine_grid_one_image_height);
             LayoutParams params = getLayoutParams();
@@ -233,6 +225,17 @@ public abstract class NineGridLayout extends ViewGroup {
             }
         }
 
+    }
+
+
+    protected void setOneImageLayoutParams(ImageView imageView, int width, int height) {
+        imageView.setLayoutParams(new LayoutParams(width, height));
+        imageView.layout(0, 0, width, height);
+
+        LayoutParams params = getLayoutParams();
+//        params.width = width;
+        params.height = height;
+        setLayoutParams(params);
     }
 
     /**

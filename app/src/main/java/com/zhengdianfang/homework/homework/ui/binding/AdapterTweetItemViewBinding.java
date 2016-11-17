@@ -46,7 +46,8 @@ public class AdapterTweetItemViewBinding extends AdapteItemBinding<Tweet> {
             //init sender profile.
             User sender = tweet.sender;
             if (sender != null) {
-                Glide.with(mContext).load(sender.avatar).centerCrop().placeholder(R.drawable.ic_avatar_placeholder).diskCacheStrategy(DiskCacheStrategy.ALL).into(tweetSenderAvatarImageView);
+                Glide.with(mContext).load(sender.avatar).centerCrop().placeholder(R.drawable.ic_avatar_placeholder)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(tweetSenderAvatarImageView);
                 tweetSenderNicknameTextView.setText(sender.nick);
             }
             //init content

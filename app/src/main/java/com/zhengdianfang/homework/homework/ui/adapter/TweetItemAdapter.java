@@ -1,6 +1,7 @@
 package com.zhengdianfang.homework.homework.ui.adapter;
 
 import android.content.Context;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by zheng on 2016/11/16.
  */
 
-public class TweetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TweetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DiffUtilsCallback.DiffUtilCompareListener<Tweet> {
 
     public static final int HEADE_TYPE = 0;
     public static final int ITEM_TYPE = 1;
@@ -101,10 +102,27 @@ public class TweetItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public void setTweetList(List<Tweet> tweetList, boolean isLoadmore) {
+        ArrayList<Tweet> tmps = new ArrayList<>(mTweetList);
         if (!isLoadmore){
             mTweetList.clear();
         }
         mTweetList.addAll(tweetList);
-        notifyDataSetChanged();
+        if (mTweetList.isEmpty()){
+            notifyDataSetChanged();
+        }else {
+
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtilsCallback<>(mTweetList, tmps, this));
+            diffResult.dispatchUpdatesTo(this);
+        }
+    }
+
+    @Override
+    public boolean areItemsTheSame(Tweet oldData, Tweet newData) {
+        return  oldData.equals(newData);
+    }
+
+    @Override
+    public boolean areContentsTheSame(Tweet oldData, Tweet newData) {
+        return oldData.equals(newData);
     }
 }

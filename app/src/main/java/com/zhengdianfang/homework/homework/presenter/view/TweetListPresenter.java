@@ -60,14 +60,16 @@ public class TweetListPresenter extends BaseListPresenter<TweetsView, Pair<User,
 
     @Override
     public void loadMoreRequest() {
-        isLoademore = true;
-        startIndex += pageNum;
-        if (startIndex < mTweets.size() && !isLoadmoreDoing){
-            isLoadmoreDoing = true;
-            rx.Observable.timer(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
-                subTweetList();
-                isLoadmoreDoing = false;
-            });
+        if (!isLoadmoreDoing){
+            isLoademore = true;
+            startIndex += pageNum;
+            if (startIndex < mTweets.size()){
+                isLoadmoreDoing = true;
+                rx.Observable.timer(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
+                    subTweetList();
+                    isLoadmoreDoing = false;
+                });
+            }
         }
     }
 

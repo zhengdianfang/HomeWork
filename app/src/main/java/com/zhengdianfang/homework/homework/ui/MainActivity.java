@@ -29,7 +29,6 @@ public class MainActivity extends BaseActivity implements TweetsView, HomeworkSw
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //init views
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -37,6 +36,7 @@ public class MainActivity extends BaseActivity implements TweetsView, HomeworkSw
 
         mTweetItemAdapter = new TweetItemAdapter(this);
         mTweetList = (RecyclerView) findViewById(R.id.tweetList);
+        mTweetList.setItemAnimator(null);
         mTweetList.setAdapter(mTweetItemAdapter);
         mTweetList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
